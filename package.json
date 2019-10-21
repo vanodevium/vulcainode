@@ -1,0 +1,38 @@
+{
+  "name": "vulcainode",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "dotenv": "^8.2.0",
+    "fastify": "^2.13.1",
+    "fastify-qs": "^1.0.1",
+    "got": "^10.7.0",
+    "https-localhost": "^4.5.2",
+    "lodash.get": "^4.4.2",
+    "lodash.pick": "^4.4.0",
+    "normalize-url": "^5.0.0",
+    "yn": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.30",
+    "@types/node": "^13.11.1",
+    "fastify": "^2.13.1",
+    "nodemon": "^2.0.3",
+    "pre-commit": "^1.2.2",
+    "snazzy": "^8.0.0",
+    "standard": "^14.3.3",
+    "tap": "^14.10.7"
+  },
+  "scripts": {
+    "test": "tap 'test/**/*.test.js'",
+    "test-ci": "tap --cov 'test/**/*.test.js'",
+    "lint": "standard | snazzy",
+    "lint-ci": "standard"
+  },
+  "precommit": [
+    "lint",
+    "test"
+  ]
+}

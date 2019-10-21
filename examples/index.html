@@ -1,0 +1,63 @@
+<html>
+<body>
+<script>
+
+  const apiURL = 'https://127.0.0.1:{port}'
+
+  const cache = {}
+
+  async function fetchRel (rel) {
+    // Prevent a bug (?) in Chrome
+    if (cache[rel]) {
+      return cache[rel]
+    }
+
+    const resp = await fetch(apiURL + rel, {
+      headers: {
+        preload: '*/authors/*/company/country',
+        fields: ':id,authors/company:id,country/country:id'
+      },
+      credentials: 'same-origin',
+    })
+    const json = await resp.json()
+    cache[rel] = json
+
+    return json
+  }
+
+  (async function () {
+    // const book = await fetchRel('/books/1')
+    //
+    // for (let j = 0; j < book.authors.length; j++) {
+    //   book.authors[j] = await fetchRel(book.authors[j])
+    //   book.authors[j].company = await fetchRel(book.authors[j].company)
+    //   book.authors[j].company.country = await fetchRel(book.authors[j].company.country)
+    // }
+    //
+    // document.write(`<pre><code>${JSON.stringify(book, null, 2)}</code></pre>`)
+    //
+    // return book
+
+    const books = await fetchRel('/books' + '?preload=*/authors/*/company/country')
+
+    for (let i = 0; i<books.length; i++) {
+      let book = books[i]
+      for (let j = 0; j < book.authors.length; j++) {
+        book.authors[j] = await fetchRel(book.authors[j])
+        if (typeof book.authors[j].company === 'string') {
+          book.authors[j].company = await fetchRel(book.authors[j].company)
+        }
+        if (typeof book.authors[j].company.country === 'string') {
+          book.authors[j].company.country = await fetchRel(book.authors[j].company.country)
+        }
+      }
+      books[i] = book
+    }
+
+    document.write(`<pre><code>${JSON.stringify(books, null, 2)}</code></pre>`)
+
+    return books
+  })()
+</script>
+</body>
+</html>
